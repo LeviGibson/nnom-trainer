@@ -1,4 +1,3 @@
-from cmath import inf
 import numpy as np
 import chess
 import halfkp
