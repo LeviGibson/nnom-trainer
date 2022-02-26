@@ -1,0 +1,5 @@
+data.pgn
+labels.npy
+__pycache__
+features/*
+models/*
