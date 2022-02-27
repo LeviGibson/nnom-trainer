@@ -22,8 +22,6 @@ class DataLoader(keras.utils.Sequence):
             self.labels[i] = self.labels[target]
             self.labels[target] = tmp
 
-
-
     def __len__(self):
         return math.floor(len(self.labels) / self.batch_size)
 

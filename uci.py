@@ -5,8 +5,6 @@ import tensorflow.keras as keras
 import numpy as np
 from labels import generate_labels
 
-tf.autograph.set_verbosity(CRITICAL)
-
 from halfkp import get_halfkp_indeicies
 
 model = keras.models.load_model("production/")
