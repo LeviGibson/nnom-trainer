@@ -17,7 +17,7 @@ while gamesProcessed < 20000:
     prevmove = None
 
     for mid, move in enumerate(moves):
-        feature = halfkp.get_halfkp_indeicies(board)
+        feature = np.packbits(halfkp.get_halfkp_indeicies(board))
         label = Labels.generate_labels(move, board)
         np.savez_compressed("features/{}".format(featureCount), feature)
         labels.append(label)

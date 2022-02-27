@@ -38,4 +38,4 @@ def get_halfkp_indeicies(board : chess.Board):
         features[i2] = True
     
     # return features
-    return np.packbits(features)
+    return (features)
