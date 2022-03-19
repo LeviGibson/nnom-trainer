@@ -19,17 +19,18 @@ while gamesProcessed < 20000:
     prevmove = None
 
     for mid, move in enumerate(moves):
+        
+        if board.turn == chess.WHITE:
+            if mid < 7:
+                key = hashlib.md5(bytes(board.fen() + str(move), encoding='ascii')).digest()
+                if key in keys: board.push(move); continue
+                keys.append(key)
 
-        if mid < 7:
-            key = hashlib.md5(bytes(board.fen() + str(move), encoding='ascii')).digest()
-            if key in keys: board.push(move); continue
-            keys.append(key)
-
-        feature = np.packbits(halfkp.get_halfkp_indeicies(board))
-        label = Labels.generate_labels(move, board)
-        np.savez_compressed("features/{}".format(featureCount), feature)
-        labels.append(label)
-        featureCount+=1
+            feature = np.packbits(halfkp.get_halfkp_indeicies(board))
+            label = Labels.generate_labels(move, board)
+            np.savez_compressed("features/{}".format(featureCount), feature)
+            labels.append(label)
+            featureCount+=1
 
         board.push(move)
 

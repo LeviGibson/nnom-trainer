@@ -31,7 +31,7 @@ def sigmoid(x):
 def propogate(a):
     global weights, biases
     for w,b in zip(weights,biases):
-        if b.shape == (768,):
+        if b.shape == (384,):
             a = np.matmul(w.T,a) + b
         else:
             a = activation(np.matmul(w.T,a) + b)//64
