@@ -25,21 +25,19 @@ def activation(x):
     x[x < 0] = 0
     return x
 
+def sigmoid(x):
+    return 1/(1 + np.exp(-x))
+
 def propogate(a):
     global weights, biases
     for w,b in zip(weights,biases):
-        a = activation(np.matmul(w.T,a) + b)
-    return a
-
-def ipropogate(a):
-    global weights, biases
-    for w,b in zip(weights,biases):
-        a = activation(np.matmul(w.T,a) + b)//64
+        if b.shape == (768,):
+            a = np.matmul(w.T,a) + b
+        else:
+            a = activation(np.matmul(w.T,a) + b)//64
     return a
 
 indicies = get_halfkp_indeicies(Board("rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR w KQkq - 0 1"))
-fp = propogate(indicies)
-
 
 for id, w in enumerate(weights):
     weights[id] = (w*64).astype(int)
@@ -47,7 +45,5 @@ for id, w in enumerate(weights):
 for id, b in enumerate(biases):
     biases[id] = (b*64).astype(int)
 
-ip = ipropogate(indicies)
-
-for i in range(len(ip)):
-    print(ip[i], fp[i])
+ip = propogate(indicies)
+print(ip)
