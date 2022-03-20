@@ -9,6 +9,7 @@ class DataLoader(keras.utils.Sequence):
         self.labels = labels
         self.batch_size = batch_size
         self.index_transformation = range(len(labels))
+        self.randomise()
 
     def randomise(self):
         for i in range(len(self.index_transformation)):
