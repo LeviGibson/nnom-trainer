@@ -1,6 +1,7 @@
 data.pgn
-labels.npy
+*labels.npy
 __pycache__
-features/*
+*features
 models/*
 production
+

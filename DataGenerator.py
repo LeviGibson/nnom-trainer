@@ -6,34 +6,39 @@ import labels as Labels
 import hashlib
 
 infile = open("data.pgn", 'r')
-labels = []
-keys = []
 
-gamesProcessed = 0
-featureCount = 0
+def generate(rows, fname):
+    labels = []
+    keys = []
 
-while gamesProcessed < 20000:
-    game = chess.pgn.read_game(infile)
-    moves = game.mainline_moves()
-    board = chess.Board()
-    prevmove = None
+    gamesProcessed = 0
+    featureCount = 0
 
-    for mid, move in enumerate(moves):
-        
-        if mid < 7:
-            key = hashlib.md5(bytes(board.fen() + str(move), encoding='ascii')).digest()
-            if key in keys: board.push(move); continue
-            keys.append(key)
+    while gamesProcessed < rows:
+        game = chess.pgn.read_game(infile)
+        moves = game.mainline_moves()
+        board = chess.Board()
+        prevmove = None
 
-        feature = np.packbits(halfkp.get_halfkp_indeicies(board))
-        label = Labels.generate_labels(move, board)
-        np.savez_compressed("features/{}".format(featureCount), feature)
-        labels.append(label)
-        featureCount+=1
+        for mid, move in enumerate(moves):
+            
+            if mid < 7:
+                key = hashlib.md5(bytes(board.fen() + str(move), encoding='ascii')).digest()
+                if key in keys: board.push(move); continue
+                keys.append(key)
 
-        board.push(move)
+            feature = np.packbits(halfkp.get_halfkp_indeicies(board))
+            label = Labels.generate_labels(move, board)
+            np.savez_compressed(fname + "features/{}".format(featureCount), feature)
+            labels.append(label)
+            featureCount+=1
 
-    gamesProcessed+=1
-    print(gamesProcessed)
+            board.push(move)
 
-np.save("labels", np.array(labels))
+        gamesProcessed+=1
+        print(gamesProcessed)
+
+    np.save(fname + "labels", np.array(labels))
+
+generate(20000, "train_")
+generate(500, "val_")
