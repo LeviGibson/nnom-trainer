@@ -4,6 +4,7 @@ import chess
 from chess import Board
 import numpy as np
 from halfkp import flipPers
+import struct
 
 def load_params():
     weights, biases = [], []
@@ -37,13 +38,23 @@ def propogate(a):
             a = activation(np.matmul(w.T,a) + b)//64
     return a
 
-indicies = get_halfkp_indeicies(Board("rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR w KQkq - 0 1"))
-
 for id, w in enumerate(weights):
     weights[id] = (w*64).astype(int)
 
 for id, b in enumerate(biases):
     biases[id] = (b*64).astype(int)
 
-ip = propogate(indicies)
-print(ip)
+# indicies = get_halfkp_indeicies(Board("rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR w KQkq - 0 1"))
+# ip = propogate(indicies)
+# print(ip)
+
+outfile = open("network.nnom", "wb")
+
+for w in weights:
+    print(w.shape)
+    for i in w.flatten():
+        outfile.write(struct.pack('<h', round(i)))
+
+for b in biases:
+    for i in b.flatten():
+        outfile.write(struct.pack('<h', round(i)))

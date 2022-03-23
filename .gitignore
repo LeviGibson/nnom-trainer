@@ -4,4 +4,4 @@ __pycache__
 *features
 models/*
 production
-
+*.nnom
