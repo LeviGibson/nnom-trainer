@@ -36,7 +36,7 @@ def propogate(a):
             a = np.matmul(w.T,a) + b
         else:
             a = activation(np.matmul(w.T,a))//128
-            print(a)
+            # print(a)
     return a
 
 for id, w in enumerate(weights):
@@ -57,11 +57,11 @@ outfile = open("network.nnom", "wb")
 #    for j in range(512):
 #        if weights[0][i][j]:print(i, j)
 
-for w in weights:
-    print(w.shape)
-    for i in w.flatten():
-        outfile.write(struct.pack('<h', round(i)))
+for i in weights[0].flatten():
+    outfile.write(struct.pack('<h', round(i)))
 
+for i in weights[1].transpose().flatten():
+    outfile.write(struct.pack('<h', round(i)))
 
 for i in b[0].flatten():
     outfile.write(struct.pack('<h', round(i)))
