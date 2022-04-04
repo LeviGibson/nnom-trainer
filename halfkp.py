@@ -15,18 +15,14 @@ flip_piece_pers = [6, 7, 8, 9, 10, 11, 0, 1, 2, 3, 4, 5]
 def piece_to_ordinal(piece):
     return (piece.piece_type - 1) + ((not piece.color) * 6)
 
-def getindex(p, sq, wk, bk, side):
+def getindex(p, sq, wk, bk):
     p = piece_to_ordinal(p)
 
-    if side == chess.WHITE:
-        sq = flipPers[sq]
-        wk = flipPers[wk]
-        bk = flipPers[bk]
-    else:
-        p = flip_piece_pers[p]
-        wk, bk = bk, wk
+    sq = flipPers[sq]
+    wk = flipPers[wk]
+    bk = flipPers[bk]
 
-    return (wk + (768*p) + (64*sq)), (bk + (768*p) + (64*sq) + 49152)
+    return (wk + (768*p) + (64*sq)), (flipPers[bk] + (768*flip_piece_pers[p]) + (64*flipPers[sq]) + 49152)
 
 def ksqs(pmap):
     wk, bk = 0,0
@@ -37,13 +33,15 @@ def ksqs(pmap):
     return wk, bk
 
 def get_halfkp_indeicies(board : chess.Board):
-    features = np.zeros((64*64*12*2), dtype=np.bool)
+    features = np.zeros(64, dtype=int)
+    featureCount = 0
     pmap = board.piece_map()
     wk, bk = ksqs(pmap)
     for p in pmap:
-        i1, i2 = getindex(pmap[p], p, wk, bk, board.turn)
-        features[i1] = True
-        features[i2] = True
+        i1, i2 = getindex(pmap[p], p, wk, bk)
+        features[featureCount] = i1
+        features[featureCount+1] = i2
+        featureCount+=2
     
     # return features
     return (features)
