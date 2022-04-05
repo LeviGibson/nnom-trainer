@@ -4,13 +4,13 @@ import halfkp
 import chess.pgn
 import labels as Labels
 import hashlib
+import subprocess
 from npy_append_array import NpyAppendArray
 
 infile = open("data.pgn", 'r')
+subprocess.call("rm *.npy", shell=True)
 
 def generate(rows, fname):
-    keys = []
-
     features = NpyAppendArray(fname + "features.npy")
     labels = NpyAppendArray(fname + "labels.npy")
 
@@ -24,11 +24,6 @@ def generate(rows, fname):
 
         for mid, move in enumerate(moves):
             if not board.is_capture(move):
-                if mid < 6:
-                    key = hashlib.md5(bytes(board.fen() + str(move), encoding='ascii')).digest()
-                    if key in keys: board.push(move); continue
-                    keys.append(key)
-
                 feature = halfkp.get_halfkp_indeicies(board)
                 label = Labels.generate_labels(move, board)
                 features.append(np.array([feature]))
@@ -40,7 +35,5 @@ def generate(rows, fname):
         gamesProcessed+=1
         print(gamesProcessed)
 
-    np.save(fname + "labels", np.array(labels))
-
-generate(200000, "train_")
+generate(100000, "train_")
 generate(500, "val_")
