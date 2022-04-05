@@ -9,10 +9,10 @@ from npy_append_array import NpyAppendArray
 infile = open("data.pgn", 'r')
 
 def generate(rows, fname):
-    labels = []
     keys = []
 
     features = NpyAppendArray(fname + "features.npy")
+    labels = NpyAppendArray(fname + "labels.npy")
 
     gamesProcessed = 0
     featureCount = 0
@@ -32,7 +32,7 @@ def generate(rows, fname):
                 feature = halfkp.get_halfkp_indeicies(board)
                 label = Labels.generate_labels(move, board)
                 features.append(np.array([feature]))
-                labels.append(label)
+                labels.append(np.array([label]))
                 featureCount+=1
 
             board.push(move)
@@ -42,5 +42,5 @@ def generate(rows, fname):
 
     np.save(fname + "labels", np.array(labels))
 
-generate(20000, "train_")
+generate(200000, "train_")
 generate(500, "val_")
