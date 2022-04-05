@@ -38,6 +38,13 @@ def propogate(a):
             a = activation(np.matmul(w.T,a))//128
             # print(a)
     return a
+
+for id, w in enumerate(weights):
+    weights[id] = (w*128).astype(int)
+
+for id, b in enumerate(biases):
+    biases[id] = (b*128).astype(int)
+
 # indicies = get_halfkp_indeicies(Board("rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR w KQkq - 0 1"))
 # ip = propogate(indicies)
 # print(ip)
@@ -50,30 +57,16 @@ outfile = open("network.nnom", "wb")
 #    for j in range(512):
 #        if weights[0][i][j]:print(i, j)
 
-for id, w in enumerate(weights):
-    weights[id] = w/2
-
-for id, b in enumerate(biases):
-    biases[id] = b/2
-
-weights[-1] *= 2
-biases[-1] *= 2
-
-for id, w in enumerate(weights):
-    weights[id] = (w*127).astype(int)
-
-for id, b in enumerate(biases):
-    biases[id] = (b*127).astype(int)
-
-
 for i in weights[0].flatten():
-    outfile.write(struct.pack('<h', i))
+    outfile.write(struct.pack('<h', round(i)))
 
 for i in weights[1].transpose().flatten():
-    outfile.write(struct.pack('<h', i))
+    outfile.write(struct.pack('<h', round(i)))
 
-for i in biases[0].flatten():
-    outfile.write(struct.pack('<h', i))
+for i in b[0].flatten():
+    outfile.write(struct.pack('<h', round(i)))
 
-for i in biases[1].flatten():
-    outfile.write(struct.pack('<i', i))
+b[1] *= 2
+
+for i in b[1].flatten():
+    outfile.write(struct.pack('<i', round(i)))
