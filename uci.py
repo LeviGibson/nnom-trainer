@@ -11,21 +11,8 @@ model = keras.models.load_model("production/")
 
 def printBestMove(fen):
     board = chess.Board(fen)
-    x = x = [[], []]
-
-    features = np.zeros((2*12*64*64,), bool)
-    ids = get_halfkp_indeicies(board)
-    for id in ids:
-        if id != 0:
-            features[id] = True
-
-    features = features.reshape((2, -1))
-    x[0].append(features[0])
-    x[1].append(features[1])
-
-    x = (np.array(x[0]), np.array(x[1]))
-
-    pred = model.predict(x)
+    features = get_halfkp_indeicies(board)
+    pred = model.predict(np.array([features]))
 
     maxeval = -100000
     maxMove = None
