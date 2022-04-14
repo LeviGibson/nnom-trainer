@@ -23,7 +23,7 @@ def generate(rows, fname):
         board = chess.Board()
 
         for mid, move in enumerate(moves):
-            if not board.is_capture(move):
+            if not board.is_capture(move) and board.turn == chess.WHITE:
                 feature = halfkp.get_halfkp_indeicies(board)
                 label = Labels.generate_labels(move, board)
                 features.append(np.array([feature]))
