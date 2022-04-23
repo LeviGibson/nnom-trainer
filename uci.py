@@ -21,6 +21,7 @@ def printBestMove(fen):
     maxMove = None
 
     for move in board.legal_moves:
+        if board.is_capture(move): continue
         eval = pred[0][generate_labels(move, board)[0]]
         if eval > maxeval: maxeval = eval; maxMove = move
 
