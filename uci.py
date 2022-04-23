@@ -11,14 +11,17 @@ model = keras.models.load_model("production/")
 
 def printBestMove(fen):
     board = chess.Board(fen)
-    features = get_halfkp_indeicies(board)
-    pred = model.predict(np.array([features]))
+    indicies = get_halfkp_indeicies(board)
+    x = np.zeros((64*64*12*2,), bool)
+    np.add.at(x, indicies, indicies.astype(bool))
+    x = (np.array([x, x]), np.ones((2,384,)))
+    pred = model.predict(x)
 
     maxeval = -100000
     maxMove = None
 
     for move in board.legal_moves:
-        eval = pred[0][generate_labels(move, board)]
+        eval = pred[0][generate_labels(move, board)[0]]
         if eval > maxeval: maxeval = eval; maxMove = move
 
     print("bestmove", maxMove)

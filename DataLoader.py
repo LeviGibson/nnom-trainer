@@ -8,6 +8,7 @@ class DataLoader(keras.utils.Sequence):
     def __init__(self, batch_size, name):
         self.labels = np.load(name + "_labels.npy")
         self.features = np.load(name + "_features.npy")
+        self.legal = np.load(name + "_legal.npy")
         self.batch_size = batch_size
         self.index_transformation = list(range(len(self.labels)))
         self.randomise()
@@ -24,6 +25,8 @@ class DataLoader(keras.utils.Sequence):
     def __getitem__(self, idx):
         x = np.zeros((self.batch_size, 64*64*12*2))
         y = np.zeros((self.batch_size, 384))
+        l = np.zeros((self.batch_size, 384))
+
         for i in range(self.batch_size):
             index = self.index_transformation[i+(idx*self.batch_size)]
             
@@ -35,5 +38,6 @@ class DataLoader(keras.utils.Sequence):
 
             x[i] = tx
             y[i] = self.labels[index]
+            l[i] = self.legal[index]
 
-        return x, y
+        return (x, l), y

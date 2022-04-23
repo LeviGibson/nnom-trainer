@@ -13,6 +13,7 @@ subprocess.call("rm *.npy", shell=True)
 def generate(rows, fname):
     features = NpyAppendArray(fname + "features.npy")
     labels = NpyAppendArray(fname + "labels.npy")
+    legal = NpyAppendArray(fname + "legal.npy")
 
     gamesProcessed = 0
     featureCount = 0
@@ -23,11 +24,15 @@ def generate(rows, fname):
         board = chess.Board()
 
         for mid, move in enumerate(moves):
-            if not board.is_capture(move) and board.turn == chess.WHITE:
+            if (not board.is_capture(move)) and board.turn == chess.WHITE:
+
                 feature = halfkp.get_halfkp_indeicies(board)
                 label = Labels.generate_labels(move, board)
+
                 features.append(np.array([feature]))
-                labels.append(np.array([label]))
+                labels.append(np.array([label[0]]))
+                legal.append(np.array([label[1]]))
+
                 featureCount+=1
 
             board.push(move)
@@ -35,5 +40,5 @@ def generate(rows, fname):
         gamesProcessed+=1
         print(gamesProcessed)
 
-generate(100000, "train_")
+generate(10000, "train_")
 generate(500, "val_")
