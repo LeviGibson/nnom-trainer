@@ -40,5 +40,5 @@ def generate(rows, fname):
         gamesProcessed+=1
         print(gamesProcessed)
 
-generate(10000, "train_")
+generate(360000, "train_")
 generate(500, "val_")
