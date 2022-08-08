@@ -6,3 +6,4 @@ models/*
 production
 *.nnom
 *.npy
+.idea

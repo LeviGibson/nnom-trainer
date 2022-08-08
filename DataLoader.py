@@ -7,13 +7,13 @@ class DataLoader(keras.utils.Sequence):
 
     def __init__(self, batch_size, name, shuffle=False):
         if not shuffle:
-            self.labels = np.load(name + "_labels.npy", mmap_mode='r')
-            self.features = np.load(name + "_features.npy", mmap_mode='r')
-            self.legal = np.load(name + "_legal.npy", mmap_mode='r')
+            self.labels = np.load(name + "_labels.npy", mmap_mode='r+')
+            self.features = np.load(name + "_features.npy", mmap_mode='r+')
+            self.legal = np.load(name + "_legal.npy", mmap_mode='r+')
         else:
-            self.labels = np.load(name + "_labels_shuffled.npy", mmap_mode='r')
-            self.features = np.load(name + "_features_shuffled.npy", mmap_mode='r')
-            self.legal = np.load(name + "_legal_shuffled.npy", mmap_mode='r')
+            self.labels = np.load(name + "_labels_shuffled.npy", mmap_mode='r+')
+            self.features = np.load(name + "_features_shuffled.npy", mmap_mode='r+')
+            self.legal = np.load(name + "_legal_shuffled.npy", mmap_mode='r+')
 
         self.batch_size = batch_size
         self.name = name
@@ -22,14 +22,14 @@ class DataLoader(keras.utils.Sequence):
         return math.floor(len(self.labels) / self.batch_size)
 
     def __getitem__(self, idx):
-        x = np.zeros((self.batch_size, 64*64*12*2))
+        x = np.zeros((self.batch_size, 64*12))
         y = np.zeros((self.batch_size, 384))
         l = np.zeros((self.batch_size, 384))
 
         for i in range(self.batch_size):
             index = i+(idx*self.batch_size)
             
-            tx = np.zeros((12*64*64*2,), bool)
+            tx = np.zeros((12*64), bool)
             ids = self.features[index]
             for id in ids:
                 if id != 0:
@@ -39,10 +39,4 @@ class DataLoader(keras.utils.Sequence):
             y[i] = self.labels[index]
             l[i] = self.legal[index]
 
-
-        nan = float("nan")
-        if (nan in x) or (nan in l) or (nan in y):
-            print(x)
-            print(y)
-            print(l)
         return (x, l), y
